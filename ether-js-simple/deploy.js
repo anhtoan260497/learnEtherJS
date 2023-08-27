@@ -6,7 +6,6 @@ async function main() {
   const provider = new ethers.providers.JsonRpcProvider(process.env.RPC_URL);
 
   const encryptJson = fs.readFileSync("./encryptedKey.json", "utf-8");
-  console.log(encryptJson);
   let wallet = new ethers.Wallet.fromEncryptedJsonSync(
     encryptJson,
     process.env.PRIVATE_KEY_PASSWORD
@@ -24,6 +23,7 @@ async function main() {
   console.log("deploy");
   const contract = await contractFactory.deploy();
   await contract.deployTransaction.wait(1); 
+  console.log(contract.address)
   // const tx = {
   //   nonce: await  wallet.getTransactionCount(),
   //   gasPrice: 20000000000,
