@@ -11,3 +11,6 @@ artifacts
 
 .vscode
 
+gas-report.txt
+coverage.json
+coverage
