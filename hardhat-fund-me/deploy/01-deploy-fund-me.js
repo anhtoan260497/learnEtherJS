@@ -1,33 +1,39 @@
-const { network, getNamedAccounts, deployments } = require("hardhat");
+const {
+  network,
+  getNamedAccounts,
+  deployments,
+  getUnnamedAccounts,
+} = require("hardhat");
 
 const { networkConfig } = require("../helper-hardhat-config");
 const { verify } = require("../utils/verify");
 
 const deployFunc = async () => {
   const { deploy, log } = deployments;
-  const { deployer } = await getNamedAccounts();
-  console.log(deployer); // error , getNamedAccounts return {}
+  const deployer =
+    (await getNamedAccounts()).deployer || (await getUnnamedAccounts())[0]; // local getNamedAccouts, testnet getUnnamedAccounts
+  // console.log("deployer", deployer);
   const chainId = network.config.chainId;
   let ethUsdPriceFeed;
   if (networkConfig[chainId]?.ethUsdPriceFeed) {
     ethUsdPriceFeed = networkConfig[chainId]?.ethUsdPriceFeed;
+    console.log(ethUsdPriceFeed)
   } else {
-    console.log(deployments);
     ethUsdAgrregator = await deployments.get("MockV3Aggregator");
     ethUsdPriceFeed = ethUsdAgrregator.address;
   }
   const args = [ethUsdPriceFeed];
-  return;
+  console.log('arg',args)
   // console.log(deployer)
   const fundMe = await deploy("FundMe", {
     from: deployer,
     args,
-    log: true,
-    blockConfirmations: networkConfig[chainId].blockConfirmations || 1,
+    // log: true,
+    blockConfirmations: networkConfig?.[chainId]?.blockConfirmations || 1,
   });
 
   if (
-    !networkConfig[chainId]?.ethUsdPriceFeed &&
+    networkConfig[chainId]?.ethUsdPriceFeed &&
     process.env.ETHERSCAN_API_KEY
   ) {
     verify(fundMe.address, args);

@@ -1,6 +1,7 @@
 require("@nomicfoundation/hardhat-toolbox");
 require("hardhat-deploy");
 require("@nomicfoundation/hardhat-ethers");
+require("@nomiclabs/hardhat-ethers")
 require('hardhat-deploy')
 require('dotenv').config()
 
